@@ -1,0 +1,73 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Личный кабинет врача</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Приемы</h5>
+                    {% for appointment in appointments %}
+                    <div class="list-group-item mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="w-75">
+                                <h6>{{ appointment.client.user.get_full_name }}</h6>
+                                <p class="mb-1">
+                                    <strong>Услуга:</strong> {{ appointment.service.name }}<br>
+                                    <strong>Дата:</strong> {{ appointment.date_time|date:"d.m.Y H:i" }}
+                                </p>
+                                {% if appointment.is_completed %}
+                                    <div class="mt-2 bg-light p-2 rounded">
+                                        <strong>Комментарий:</strong> 
+                                        <span class="text-muted">{{ appointment.doctor_notes }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-primary mb-2">
+                                    {{ appointment.service.price }} руб.
+                                </span>
+                                {% if not appointment.is_completed %}
+                                    <a href="{% url 'complete-appointment' appointment.pk %}" 
+                                       class="btn btn-success btn-sm d-block">
+                                        Завершить
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-success d-block">Завершено</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="alert alert-info">Нет запланированных приемов</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Статистика</h5>
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Всего пациентов
+                            <span class="badge bg-primary rounded-pill">{{ total_patients }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Завершено приемов
+                            <span class="badge bg-success rounded-pill">{{ completed_appointments }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Запланировано
+                            <span class="badge bg-warning rounded-pill">{{ upcoming_appointments }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

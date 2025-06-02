@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}{{ news.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <article>
+        <!-- Заголовок -->
+        <h1 class="mb-3">{{ news.title }}</h1>
+        
+        <!-- Дата публикации -->
+        <div class="text-muted mb-4">
+            Опубликовано: {{ news.publish_date|date:"d.m.Y H:i" }}
+        </div>
+
+        <!-- Изображение -->
+        {% if news.image %}
+        <img src="{{ news.image.url }}" 
+             class="img-fluid rounded mb-4" 
+             alt="{{ news.title }}"
+             style="max-height: 400px; object-fit: cover;">
+        {% endif %}
+
+        <!-- Полный текст -->
+        <div class="news-content">
+            {{ news.full_content|linebreaks }}
+        </div>
+
+        <!-- Кнопка возврата -->
+        <a href="{% url 'news' %}" class="btn btn-primary mt-4">
+            ← Все новости
+        </a>
+    </article>
+</div>
+{% endblock %}

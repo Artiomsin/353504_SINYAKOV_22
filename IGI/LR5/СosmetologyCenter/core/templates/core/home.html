@@ -1,0 +1,161 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Косметологический центр — Главная{% endblock %}
+
+{% block content %}
+
+<!-- Курс валют -->
+<div class="container-fluid bg-light py-2 border-bottom">
+    <div class="container d-flex justify-content-end">
+        {% if currency_error %}
+            <small class="text-danger">Курс: {{ currency_error }}</small>
+        {% elif currency %}
+            <small class="fw-semibold">
+                Курс валют: 
+                <span class="text-primary">USD → BYN:</span> {{ currency.rates.USD_BYN|floatformat:3 }} | 
+                <span class="text-primary">EUR → BYN:</span> {{ currency.rates.EUR_BYN|floatformat:3 }}
+            </small>
+        {% else %}
+            <small class="text-muted">Курс: загрузка...</small>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Главная секция -->
+<section class="hero-section py-5 bg-gradient-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0 text-center text-md-start">
+                <h1 class="display-4 fw-bold">Современная косметология</h1>
+                <p class="lead text-secondary mb-3">Профессиональный уход за кожей, омолаживающие процедуры и новейшие технологии красоты.</p>
+                <p class="mb-4">Мы предлагаем широкий спектр косметологических услуг, включая безопасные и эффективные инъекции ботокса, филлеров, а также нитевой лифтинг и другие подтяжки для естественного омоложения.</p>
+                <a href="{% url 'services' %}" class="btn btn-primary btn-lg shadow-sm">
+                    Наши услуги <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="{% static 'img/FotoJet (65)-1200.jpg.webp' %}" class="img-fluid rounded shadow-lg" alt="Косметология">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Новости -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="mb-5 text-center fw-semibold">Последние новости</h2>
+        <div class="row g-4">
+            {% for news in latest_news %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm rounded-4 border-0">
+                    {% if news.image %}
+                        <img src="{{ news.image.url }}" alt="{{ news.title }}" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/default-news.jpg' %}" alt="Новость" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ news.title }}</h5>
+                        <p class="card-text text-truncate">{{ news.short_content }}</p>
+                        <a href="{% url 'news-detail' news.pk %}" class="btn btn-outline-primary mt-auto align-self-start">
+                            Читать далее
+                            <i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">Новостей пока нет</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Отзывы -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="mb-5 text-center fw-semibold">Отзывы наших клиентов</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for review in reviews %}
+            <div class="col">
+                <div class="card shadow-sm rounded-4 border-0 h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">{{ review.user.get_full_name }}</h5>
+                            <div class="text-warning fs-5" title="Рейтинг">{{ review.get_rating_display }}</div>
+                        </div>
+                        <p class="card-text flex-grow-1">{{ review.text }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between small text-muted">
+                        <span>UTC: {{ review.date|date:"d/m/Y H:i" }}</span>
+                        {% if user.is_authenticated and user.userprofile.timezone %}
+                            <span>Ваше время: {% timezone user.userprofile.timezone %}{{ review.date|date:"d/m/Y H:i" }}{% endtimezone %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Кнопка добавления отзыва -->
+        <div class="text-center mt-5">
+            <button type="button" class="btn btn-success btn-lg shadow" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                <i class="bi bi-chat-dots-fill me-2"></i> Оставить отзыв
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Модальное окно отзыва -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content rounded-4 shadow">
+            <form method="post" action="{% url 'home' %}">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title" id="reviewModalLabel">Ваш отзыв</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    {% if messages %}
+                    <div class="mb-3">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Оценка:</label>
+                        <div class="d-flex gap-3 flex-wrap">
+                            {% for choice in review_form.rating.field.choices %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rating" id="rating{{ choice.0 }}" value="{{ choice.0 }}" required>
+                                <label class="form-check-label text-warning fs-5" for="rating{{ choice.0 }}">
+                                    {{ choice.1 }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="review-text" class="form-label fw-semibold">Текст отзыва:</label>
+                        <textarea id="review-text" name="text" class="form-control" rows="4" placeholder="Ваш отзыв..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

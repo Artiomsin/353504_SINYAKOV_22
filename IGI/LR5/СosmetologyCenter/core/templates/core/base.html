@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}VitaDerma - Главная{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="d-flex flex-column flex-md-row">
+    <!-- Вертикальное меню -->
+    <nav class="bg-primary text-white p-3 min-vh-100" style="width: 250px;">
+        <h4 class="text-white mb-4">VitaDerma</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'home' %}">Главная</a></li>
+            {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'set-timezone' %}"><i class="bi bi-clock me-1"></i>Временная зона</a></li>
+            {% endif %}
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'about' %}">О нас</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'services' %}">Услуги</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'doctors' %}">Наши Специалисты</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'privacy-policy' %}">Политика</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'promocodes' %}">Промокоды</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'vacancy-list' %}">Вакансии</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'statistics' %}">Статистика</a></li>
+
+            {% if user.is_authenticated %}
+                {% if user.groups.all.0.name == 'Doctors' %}
+                <li class="nav-item mt-2">
+                    <a class="btn btn-outline-light w-100" href="{% url 'doctor-dashboard' %}">
+                        <i class="bi bi-clipboard-pulse me-1"></i>Кабинет врача
+                    </a>
+                </li>
+                {% elif user.groups.all.0.name == 'Clients' %}
+                <li class="nav-item mt-2">
+                    <a class="btn btn-outline-light w-100" href="{% url 'client-dashboard' %}">
+                        <i class="bi bi-person-circle me-1"></i>Личный кабинет
+                    </a>
+                </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+
+        <div class="mt-auto pt-4">
+            {% if user.is_authenticated %}
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle w-100" type="button" id="userMenu" data-bs-toggle="dropdown">
+                    {% if user.first_name or user.last_name %}
+                        {{ user.get_full_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="userMenu">
+                    <li>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item">
+                                <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-light w-100 mt-2">Войти</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Контент -->
+    <main class="flex-grow-1 p-4">
+        {% block content %}{% endblock %}
+        <footer class="mt-5 text-muted text-center">
+            <p class="mb-0">© 2025 VitaDerma. Все права защищены</p>
+            <p>Текущая дата: {% now "d/m/Y" %}</p>
+        </footer>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

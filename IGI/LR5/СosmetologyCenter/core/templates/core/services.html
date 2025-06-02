@@ -1,0 +1,107 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Форма фильтров -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Поиск по названию или описанию"
+                           value="{{ filter.form.search.value|default:'' }}">
+                </div>
+                
+                <div class="col-md-3">
+                    <select name="order_by" class="form-select">
+                        <option value="">Сортировать по...</option>
+                        <option value="name" {% if filter.form.order_by.value == 'name' %}selected{% endif %}>
+                            Названию (А-Я)
+                        </option>
+                        <option value="-name" {% if filter.form.order_by.value == '-name' %}selected{% endif %}>
+                            Названию (Я-А)
+                        </option>
+                        <option value="price" {% if filter.form.order_by.value == 'price' %}selected{% endif %}>
+                            Цене (↑)
+                        </option>
+                        <option value="-price" {% if filter.form.order_by.value == '-price' %}selected{% endif %}>
+                            Цене (↓)
+                        </option>
+                        <option value="-id" {% if filter.form.order_by.value == '-id' %}selected{% endif %}>
+                            Новые
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Применить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Результаты -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for service in services %}
+        <div class="col">
+            <div class="card h-100 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">{{ service.name }}</h5>
+                    <p class="card-text text-muted">{{ service.short_description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary rounded-pill fs-6">
+                            {{ service.price }} руб.
+                        </span>
+                        <a href="{% url 'service-detail' service.pk %}" 
+                           class="btn btn-outline-secondary">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning">Ничего не найдено</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    {% if page_obj %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo; Первая</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Назад</a>
+            </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Далее</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
