@@ -1,0 +1,44 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Завершение приема</h2>
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label class="form-label">Пациент:</label>
+                    <p class="form-control-plaintext">
+                        {{ appointment.client.user.get_full_name }}
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Услуга:</label>
+                    <p class="form-control-plaintext">
+                        {{ appointment.service.name }}
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_doctor_notes" class="form-label">
+                        Комментарий к приему:
+                    </label>
+                    {{ form.doctor_notes }}
+                </div>
+
+                <div class="d-flex justify-content-between mt-5">
+                    <button type="submit" class="btn btn-lg btn-success">
+                        <i class="bi bi-check-circle me-2"></i>Завершить прием
+                    </button>
+                    <a href="{% url 'doctor-dashboard' %}" class="btn btn-lg btn-outline-secondary">
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

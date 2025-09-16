@@ -1,0 +1,110 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Статистика медицинского центра</h2>
+    
+    <!-- Клиенты -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>Клиенты</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Список клиентов (A-Я)</h5>
+                    <ul class="list-group">
+                        {% for client in clients %}
+                        <li class="list-group-item">
+                            {{ client.user.get_full_name }} 
+                            <span class="badge bg-secondary">
+                                {{ client.age }} лет
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5>Статистика по возрасту</h5>
+                    <dl class="row">
+                        <dt class="col-sm-6">Средний возраст:</dt>
+                        <dd class="col-sm-6">{{ age_stats.average_age|floatformat:1 }} лет</dd>
+                        
+                        <dt class="col-sm-6">Медианный возраст:</dt>
+                        <dd class="col-sm-6">{{ age_stats.median_age|floatformat:1 }} лет</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Услуги -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>Статистика услуг</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Самая популярная</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>{{ most_popular.name }}</h6>
+                            <p>Количество продаж: {{ most_popular.total_purchases }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5>Самая прибыльная</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            {% if most_profitable %}
+                                <h6>{{ most_profitable.name }}</h6>
+                                <p>Общий доход: {{ most_profitable_income|floatformat:2 }} руб.</p>
+                            {% else %}
+                                <p class="text-muted">Нет данных</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Визуализация -->
+    <div class="row mt-4">
+        <!-- Круговая диаграмма -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Распределение продаж по услугам</h4>
+                    {% if pie_chart %}
+                        <img src="data:image/png;base64,{{ pie_chart }}" 
+                             alt="Распределение продаж"
+                             class="img-fluid">
+                    {% else %}
+                        <div class="alert alert-info">Нет данных для отображения</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Линейный график -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Динамика продаж по дням</h4>
+                    {% if line_chart %}
+                        <img src="data:image/png;base64,{{ line_chart }}" 
+                             alt="Динамика продаж"
+                             class="img-fluid">
+                    {% else %}
+                        <div class="alert alert-info">Нет данных для отображения</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

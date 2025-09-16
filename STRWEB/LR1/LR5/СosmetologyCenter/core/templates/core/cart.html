@@ -1,0 +1,59 @@
+{% extends "core/base.html" %}
+{% block title %}Корзина{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-center text-primary fw-bold">Ваша корзина</h2>
+
+    {% if cart and items %}
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Услуга</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Статус</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.service.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.total_price }} руб.</td>
+                <td>
+                    {% if item.is_paid %}
+                        <span class="text-success fw-semibold">Оплачено</span>
+                    {% else %}
+                        <span class="text-warning">Ожидает оплату</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not item.is_paid %}
+                    <form method="post" action="{% url 'pay-cart-item' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">Оплатить</button>
+                    </form>
+                    {% endif %}
+                    <form method="post" action="{% url 'remove-from-cart' item.id %}" class="mt-1">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-end mt-4">
+        <p class="h5">Итого: <strong>{{ cart.total_price }} руб.</strong></p>
+        <form method="post" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Оплатить все услуги</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">Корзина пуста.</div>
+    {% endif %}
+</div>
+{% endblock %}
