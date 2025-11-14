@@ -1,0 +1,89 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block body_class %}about-page{% endblock %}
+{% block title %}О компании{% endblock %}
+
+{% block content %}
+<div class="company-wrapper">
+    {% if company %}
+        <header class="company-header">
+            <h1>{{ company.name }}</h1>
+            {% if company.logo %}
+                <img src="{{ company.logo.url }}" alt="Логотип компании" class="company-logo">
+            {% endif %}
+        </header>
+
+        <section class="company-info">
+            <h2>Описание</h2>
+            <p>{{ company.description }}</p>
+
+            <h2>Дата основания</h2>
+            <p>{{ company.founded }}</p>
+
+            <h2>Количество сотрудников</h2>
+            <p>{{ company.employees }}</p>
+
+            <h2>Сайт</h2>
+            <p><a href="{{ company.website }}" target="_blank">{{ company.website }}</a></p>
+        </section>
+
+        {% if company.video_url %}
+        <section class="company-video">
+            <h2>Видео</h2>
+            <div class="video-wrapper">
+                <iframe src="{{ company.video_url }}" allow="autoplay" allowfullscreen></iframe>
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="company-history">
+            <h2>История по годам</h2>
+            <ol>
+                <li>2015 — Регистрация компании</li>
+                <li>2016 — Выход на рынок</li>
+                <li>2018 — Расширение команды</li>
+                <li>2020 — Открытие филиалов</li>
+            </ol>
+        </section>
+
+        <section class="company-details">
+            <h2>Реквизиты</h2>
+            <p><strong>ИНН:</strong> {{ company.inn }}</p>
+            <p><strong>ОГРН:</strong> {{ company.ogrn }}</p>
+            <p><strong>Юридический адрес:</strong> {{ company.legal_address }}</p>
+        </section>
+
+        <section class="company-certificate">
+            <h2>Сертификат</h2>
+            <div class="certificate-frame">
+                <h3>СЕРТИФИКАТ</h3>
+                <p>Настоящим подтверждается, что</p>
+                <h4>{{ company.name }}</h4>
+                <p>является сертифицированным центром эстетической медицины</p>
+                <p class="certificate-date">Дата выдачи: {{ company.founded }}</p>
+                <p class="certificate-sign">Подпись директора __________</p>
+            </div>
+        </section>
+
+        <section class="company-quotes">
+    <h2>💬 Цитаты о компании</h2>
+
+    <blockquote class="company-quote">
+        <p>«Компания “Vitaderma” всегда ставит качество и заботу о клиентах на первое место.»</p>
+        <footer>— Руководитель центра</footer>
+    </blockquote>
+
+    <blockquote class="company-quote">
+        <p>«Здесь я нашла не только профессионализм, но и искреннее внимание к деталям.»</p>
+        <footer>— Клиентка Анна</footer>
+    </blockquote>
+
+    <p>Как сказал один из клиентов: <q>“Vitaderma — это место, где красота встречается с наукой.”</q></p>
+</section>
+
+    {% else %}
+        <p>Информация о компании пока не добавлена.</p>
+    {% endif %}
+</div>
+{% endblock %}

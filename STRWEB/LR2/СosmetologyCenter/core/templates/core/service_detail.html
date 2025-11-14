@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+
+{% block body_class %}service_detail-page{% endblock %}
+
+{% block content %}
+<div class="service-detail-container">
+    <h2 class="service-title">{{ service.name }}</h2>
+
+    <div class="service-grid">
+        <!-- Описание услуги -->
+        <div class="service-description">
+            <h3>Описание услуги</h3>
+            <p>{{ service.full_description }}</p>
+            <p class="service-price">{{ service.price }} руб.</p>
+        </div>
+
+        <!-- Форма записи -->
+        <div class="service-form">
+            <h3 class="form-title">Записаться</h3>
+            <form method="post" action="{% url 'add-to-cart' service.id %}">
+                {% csrf_token %}
+                <label for="doctor">Выберите врача</label>
+                <input id="doctor" name="doctor" list="doctor-list" required placeholder="Начните ввод...">
+                <datalist id="doctor-list">
+                    {% for doctor in service.doctors.all %}
+                   <option value="{{ doctor.pk }}">{{ doctor.full_name }}</option>
+                    {% endfor %}
+                </datalist>
+
+                <label for="date_time">Дата и время</label>
+                <input id="date_time" type="datetime-local" name="date_time" required>
+
+                <button type="submit">Добавить в корзину</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

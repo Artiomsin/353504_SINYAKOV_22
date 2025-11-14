@@ -1,0 +1,118 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}{{ doctor.full_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row gy-4">
+        <!-- Левая колонка - фото и основная информация -->
+        <div class="col-md-4">
+            <div class="card shadow-sm rounded-4 border-0">
+                {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" 
+                     class="card-img-top rounded-top" 
+                     alt="{{ doctor.full_name }}"
+                     style="width: 100%; height: 400px; object-fit: cover; object-position: center;">
+                {% else %}
+                <div class="bg-secondary rounded-top d-flex align-items-center justify-content-center text-white fs-5" 
+                     style="height: 400px;">
+                    Фото отсутствует
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h4 class="card-title fw-bold">{{ doctor.full_name }}</h4>
+                    <div class="mb-3">
+                        <span class="badge bg-primary fs-6 px-3 py-2">
+                            {{ doctor.cabinet.name }}
+                        </span>
+                    </div>
+                    <p class="card-text mb-2">
+                        <i class="bi bi-award me-2 text-warning"></i>Опыт: <strong>{{ doctor.experience }} лет</strong><br>
+                        <i class="bi bi-file-text me-2 text-info"></i>Лицензия: <strong>{{ doctor.license_number }}</strong>
+                    </p>
+                    <p class="card-text mb-0">
+                        <i class="bi bi-telephone me-2 text-success"></i><a href="tel:{{ doctor.phone }}" class="text-decoration-none">{{ doctor.phone }}</a><br>
+                        <i class="bi bi-envelope me-2 text-danger"></i>
+                        <a href="mailto:{{ doctor.email }}" class="text-decoration-none">{{ doctor.email }}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка - услуги и специализации -->
+        <div class="col-md-8">
+            <!-- Список услуг -->
+            <div class="card shadow-sm rounded-4 border-0 mb-4">
+                <div class="card-header bg-primary text-white rounded-top">
+                    <h5 class="mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-clipboard2-pulse-fill"></i> Оказываемые услуги
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if doctor.services.exists %}
+                    <div class="list-group">
+                        {% for service in doctor.services.all %}
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center rounded-3 mb-2 shadow-sm">
+                            <div>
+                                <h6 class="mb-1 fw-semibold">{{ service.name }}</h6>
+                                <small class="text-muted">{{ service.short_description }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-success rounded-pill fs-6">
+                                    {{ service.price }} руб.
+                                </span>
+                                <br>
+                                <small class="text-muted">{{ service.duration_formatted }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-0">
+                        Нет доступных услуг
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Специализации -->
+            <div class="card shadow-sm rounded-4 border-0">
+                <div class="card-header bg-info text-white rounded-top">
+                    <h5 class="mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-star-fill"></i> Специализации
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if doctor.specializations.exists %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for spec in doctor.specializations.all %}
+                        <span class="badge bg-secondary fs-6 py-2 px-3 rounded-pill">
+                            {{ spec.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Информация отсутствует</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Плавный эффект при наведении на услуги */
+.list-group-item-action:hover {
+    
+    cursor: pointer;
+    transform: translateX(5px);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Кнопки и ссылки без стандартного подчеркивания */
+a.text-decoration-none:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

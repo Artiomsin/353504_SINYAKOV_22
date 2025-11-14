@@ -1,0 +1,232 @@
+{% extends "core/base.html" %}
+{% block body_class %}home-page{% endblock %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Косметологический центр — Главная{% endblock %}
+
+{% block content %}
+
+<!-- Переключатель темы -->
+<div class="theme-toggle">
+  <label class="switch">
+    <input type="checkbox" id="themeSwitcher">
+    <span class="slider-round"></span>
+  </label>
+  <span id="themeLabel">Светлая тема</span>
+</div>
+
+<!-- Курс валют -->
+<div class="currency-bar">
+  <div class="currency-inner">
+    {% if currency_error %}
+      <small class="currency-error">Курс: {{ currency_error }}</small>
+    {% elif currency %}
+      <small class="currency-values">
+        Курс валют: 
+        <span class="usd">USD → BYN:</span> {{ currency.rates.USD_BYN|floatformat:3 }} | 
+        <span class="eur">EUR → BYN:</span> {{ currency.rates.EUR_BYN|floatformat:3 }}
+      </small>
+    {% else %}
+      <small class="currency-loading">Курс: загрузка...</small>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Главная секция -->
+<section class="hero-section">
+  <div class="hero-container">
+    <div class="hero-text">
+      <h1 class="hero-title">Современная косметология</h1>
+      <p class="hero-desc">
+        Профессиональный уход за кожей, омолаживающие процедуры и новейшие технологии красоты. 
+        Мы предлагаем широкий спектр косметологических услуг, включая безопасные и эффективные 
+        инъекции ботокса, филлеров, а также нитевой лифтинг и другие подтяжки для естественного омоложения.
+      </p>
+      <a href="{% url 'services' %}" class="hero-link">Наши услуги →</a>
+    </div>
+    <div class="hero-image">
+      <img src="{% static 'img/FotoJet (65)-1200.jpg.webp' %}" alt="Косметология">
+    </div>
+  </div>
+</section>
+
+
+<!-- Баннеры -->
+<section class="banners-section">
+  <div class="slider-container">
+    <div class="slider-wrapper" id="sliderWrapper">
+      <div class="slide">
+        <a href="#">
+          <img src="{% static 'img/banner_1.png' %}" alt="Баннер 1">
+          <div class="slide-caption">1 консультация бесплатно</div>
+        </a>
+      </div>
+      <div class="slide">
+        <a href="#">
+          <img src="{% static 'img/banner_2.png' %}" alt="Баннер 2">
+          <div class="slide-caption">Скидка 30% !</div>
+        </a>
+      </div>
+      <div class="slide">
+        <a href="#">
+          <img src="{% static 'img/banner_3.png' %}" alt="Баннер 3">
+          <div class="slide-caption">Скидка пенсионерам</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="slider-controls">
+      <button id="prevBtn">←</button>
+      <span id="counter">1/3</span>
+      <button id="nextBtn">→</button>
+    </div>
+
+    <div class="slider-pagination" id="pagination"></div>
+
+    <form id="settingsForm" class="slider-settings">
+      <label>Задержка (сек): <input type="number" id="delayInput" min="1" value="5"></label>
+      <label><input type="checkbox" id="loopInput" checked> Зацикливание</label>
+      <label><input type="checkbox" id="navsInput" checked> Стрелки</label>
+      <label><input type="checkbox" id="pagsInput" checked> Пагинация</label>
+      <label><input type="checkbox" id="autoInput" checked> Авто</label>
+      <label><input type="checkbox" id="hoverStopInput" checked> Стоп при наведении</label>
+      <div class="settings-actions">
+    <button type="button" id="applySettings">Применить</button>
+  </div>
+    </form>
+  </div>
+</section>
+
+
+
+
+
+<!-- Новости -->
+<section class="news-section">
+  <h2 class="news-title">Последние новости</h2>
+  <div class="news-grid">
+    {% for news in latest_news %}
+      <div class="news-card">
+        {% if news.image %}
+          <img src="{{ news.image.url }}" alt="{{ news.title }}" class="news-img">
+        {% else %}
+          <img src="{% static 'img/default-news.jpg' %}" alt="Новость" class="news-img">
+        {% endif %}
+        {% if forloop.first %}
+          <div class="news-badge">Новое!</div>
+        {% endif %}
+        <div class="news-body">
+          <h5 class="news-card-title">{{ news.title }}</h5>
+          <p class="news-card-text">{{ news.short_content }}</p>
+          <a href="{% url 'news-detail' news.pk %}" class="news-link">Читать далее →</a>
+        </div>
+      </div>
+    {% empty %}
+      <div class="news-empty">Новостей пока нет</div>
+    {% endfor %}
+  </div>
+</section>
+
+
+<!-- Партнеры -->
+<section class="partners-section">
+  <h2 class="partners-title">Наши партнёры</h2>
+  <div class="partners-grid">
+    {% for partner in partners %}
+      <div class="partner-card">
+        <div class="partner-circle">
+          <a href="{{ partner.website }}" target="_blank">
+            <img src="{{ partner.logo.url }}" alt="{{ partner.name }}">
+          </a>
+        </div>
+        <p class="partner-name">{{ partner.name }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Отзывы -->
+<section class="reviews">
+  <h2>Отзывы наших клиентов</h2>
+  <div>
+    {% for review in reviews %}
+      <div class="review-card">
+        <div>
+          <h5>{{ review.user.get_full_name }}</h5>
+          <div class="rating">{{ review.get_rating_display }}</div>
+        </div>
+        <p>{{ review.text }}</p>
+        <div class="meta">
+          <span>UTC: {{ review.date|date:"d/m/Y H:i" }}</span>
+          {% if user.is_authenticated and user.userprofile.timezone %}
+            <span>Ваше время: {% timezone user.userprofile.timezone %}{{ review.date|date:"d/m/Y H:i" }}{% endtimezone %}</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Кнопка добавления отзыва -->
+  <div>
+    <a href="#reviewModal" class="open-btn">Оставить отзыв</a>
+  </div>
+</section>
+
+<!-- Модальное окно отзыва -->
+<div id="reviewModal" class="modal">
+  <div class="modal-content">
+    <form method="post" action="{% url 'home' %}">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5>Ваш отзыв</h5>
+        <a href="#" class="close">&times;</a>
+      </div>
+      <div class="modal-body">
+        {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+              <div>{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label>Оценка:</label>
+          <div class="rating-options">
+            {% for choice in review_form.rating.field.choices %}
+              <label>
+                <input type="radio" name="rating" value="{{ choice.0 }}" required>
+                {{ choice.1 }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="review-text">Текст отзыва:</label>
+          <textarea id="review-text" name="text" rows="4" placeholder="Ваш отзыв..." required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="cancel-btn">Закрыть</a>
+        <button type="submit">Отправить отзыв</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Анимация после отзывов -->
+<section class="loader-section">
+  <div class="loader">
+    <div class="bar blue"></div>
+    <div class="bar green"></div>
+    <div class="bar orange"></div>
+    <div class="bar red"></div>
+    <div class="bar pink"></div>
+    <div class="bar purple"></div>
+  </div>
+</section>
+
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "core/base.html" %}
+
+{% block title %}Промокоды{% endblock %}
+
+{% block content %}
+<div class="promo-container">
+
+    <h2>Активные промокоды</h2>
+    <table class="promo-table">
+        <caption>Список действующих промокодов</caption>
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>Скидка</th>
+                <th>Действует до</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for promo in promocodes %}
+            <tr>
+                <td>{{ promo.code }}</td>
+                <td>{{ promo.discount }}%</td>
+                <td>{{ promo.valid_until|date:"d.m.Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Нет активных промокодов</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Архив промокодов</h2>
+    <table class="promo-table archive">
+        <caption>Истёкшие промокоды</caption>
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>Скидка</th>
+                <th>Истёк</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for promo in archive %}
+            <tr>
+                <td>{{ promo.code }}</td>
+                <td>{{ promo.discount }}%</td>
+                <td>{{ promo.valid_until|date:"d.m.Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Архив пуст</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

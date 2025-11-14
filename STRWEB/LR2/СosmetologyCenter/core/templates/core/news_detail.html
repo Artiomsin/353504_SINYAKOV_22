@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}{{ news.title }}{% endblock %}
+{% block body_class %}news-detail-page{% endblock %}
+
+{% block content %}
+<div class="news-detail-container">
+  <article>
+    <!-- Заголовок -->
+    <h1 class="news-title">{{ news.title }}</h1>
+
+    <!-- Дата публикации -->
+    <div class="news-meta">
+      Опубликовано: {{ news.publish_date|date:"d.m.Y H:i" }}
+    </div>
+
+    <!-- Изображение -->
+    {% if news.image %}
+    <img src="{{ news.image.url }}" alt="{{ news.title }}" class="news-detail-img">
+    {% endif %}
+
+    <!-- Полный текст -->
+    <div class="news-full-text">
+      {{ news.full_content|linebreaks }}
+    </div>
+
+    <!-- Кнопка возврата -->
+    <a href="{% url 'news' %}" class="back-link">← Все новости</a>
+  </article>
+</div>
+{% endblock %}

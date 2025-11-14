@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru" itemscope itemtype="http://schema.org/WebPage">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}VitaDerma - Главная{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/logo1.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+    <script src="{% static 'js/slider.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
+
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    
+  
+  
+  
+<div itemscope itemtype="http://schema.org/Organization">
+    <div class="layout">
+    <nav itemprop="department" itemscope itemtype="http://schema.org/MedicalOrganization">
+        <div>
+            
+            <h4 itemprop="name">VitaDerma</h4>
+        </div>
+
+        <ul itemscope itemtype="http://schema.org/SiteNavigationElement">
+            <li><a href="{% url 'home' %}" itemprop="url">Главная</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'set-timezone' %}" itemprop="url">Временная зона</a></li>
+            {% endif %}
+            <li><a href="{% url 'about' %}" itemprop="url">О нас</a></li>
+            <li><a href="{% url 'services' %}" itemprop="url">Услуги</a></li>
+            <li><a href="{% url 'cart' %}" itemprop="url">Корзина</a></li>
+            <li><a href="{% url 'doctors' %}" itemprop="url">Наши Специалисты</a></li>
+            <li><a href="{% url 'privacy-policy' %}" itemprop="url">Политика</a></li>
+            <li><a href="{% url 'promocodes' %}" itemprop="url">Промокоды</a></li>
+            <li><a href="{% url 'vacancy-list' %}" itemprop="url">Вакансии</a></li>
+            <li><a href="{% url 'statistics' %}" itemprop="url">Статистика</a></li>
+            <li><a href="{% url 'glossary' %}" itemprop="url">Словарь терминов</a></li>
+
+            {% if user.is_authenticated %}
+                {% if user.groups.all.0.name == 'Doctors' %}
+                <li><a href="{% url 'doctor-dashboard' %}" itemprop="url">Кабинет врача</a></li>
+                {% elif user.groups.all.0.name == 'Clients' %}
+                <li><a href="{% url 'client-dashboard' %}" itemprop="url">Личный кабинет</a></li>
+                {% endif %}
+            {% endif %}
+        </ul>
+
+        <div>
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}" itemprop="url">Войти</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main itemprop="mainContentOfPage">
+        {% block content %}{% endblock %}
+        <footer itemprop="hasPart" itemscope itemtype="http://schema.org/WPFooter">
+            <p>© 2025 <span itemprop="name">VitaDerma</span>. Все права защищены</p>
+            <p>Текущая дата: {% now "d/m/Y" %}</p>
+        </footer>
+    </main>
+    </div>
+</div>
+
+</body>
+</html>

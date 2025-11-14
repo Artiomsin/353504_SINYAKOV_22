@@ -1,0 +1,58 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="catalog-container">
+    <h2 class="catalog-title">Каталог услуг</h2>
+
+    <!-- Форма фильтров -->
+    <div class="filter-block">
+        <form method="get" class="filter-form">
+            <input type="text" name="search" placeholder="Поиск..." value="{{ filter.form.search.value|default:'' }}">
+
+            <select name="order_by" size="6">
+                <option value="">Сортировать по...</option>
+                <option value="name" {% if filter.form.order_by.value == 'name' %}selected{% endif %}>Название (А-Я)</option>
+                <option value="-name" {% if filter.form.order_by.value == '-name' %}selected{% endif %}>Название (Я-А)</option>
+                <option value="price" {% if filter.form.order_by.value == 'price' %}selected{% endif %}>Цена ↑</option>
+                <option value="-price" {% if filter.form.order_by.value == '-price' %}selected{% endif %}>Цена ↓</option>
+                <option value="-id" {% if filter.form.order_by.value == '-id' %}selected{% endif %}>Новые</option>
+            </select>
+
+            <button type="submit">Применить</button>
+        </form>
+    </div>
+
+    <!-- Сетка карточек -->
+    <div class="grid-services">
+        {% for service in services %}
+        <div class="service-card">
+            <h3>{{ service.name }}</h3>
+            <p>{{ service.short_description }}</p>
+            <div class="service-footer">
+                <span class="price">{{ service.price }} руб.</span>
+                <a href="{% url 'service-detail' service.pk %}" class="details-btn">Подробнее</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-services">Ничего не найдено</div>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    {% if page_obj %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+        {% endif %}
+
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Далее</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

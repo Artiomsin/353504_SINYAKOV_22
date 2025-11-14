@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ term.term }}{% endblock %}
+
+{% block content %}
+<div class="glossary-detail">
+    <h2>{{ term.term }}</h2>
+    <p class="definition">{{ term.definition }}</p>
+    <p class="glossary-date">Добавлено: {{ term.date_added|date:"d.m.Y" }}</p>
+    <a href="{% url 'glossary' %}" class="back-link">← Назад к списку</a>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Запись на прием</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Услуга: {{ service.name }}</h5>
+            <p>Врач: {{ doctor.full_name }}</p>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Подтвердить запись</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

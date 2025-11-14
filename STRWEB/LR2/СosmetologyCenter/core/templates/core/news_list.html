@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Все новости{% endblock %}
+{% block body_class %}news-list-page{% endblock %}
+
+{% block content %}
+<div class="news-list-container">
+  <h1 class="news-list-title">Все новости</h1>
+
+  <div class="news-list-grid">
+    {% for news in object_list %}
+    <div class="news-card">
+      {% if news.image %}
+      <img src="{{ news.image.url }}" alt="{{ news.title }}" class="news-img">
+      {% else %}
+      <div class="news-img-placeholder">Нет изображения</div>
+      {% endif %}
+      <div class="news-body">
+        <h5 class="news-card-title">{{ news.title }}</h5>
+        <p class="news-card-text">{{ news.short_content }}</p>
+        <a href="{% url 'news-detail' news.pk %}" class="news-link">Читать далее →</a>
+        <div class="news-date">{{ news.publish_date|date:"d.m.Y H:i" }}</div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="news-empty">Новостей пока нет</div>
+    {% endfor %}
+  </div>
+
+  {% if is_paginated %}
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+    <a href="?page={{ num }}" class="{% if num == page_obj.number %}active{% endif %}">{{ num }}</a>
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

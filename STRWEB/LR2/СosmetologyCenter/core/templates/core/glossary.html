@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+
+{% block title %}Словарь терминов и понятий{% endblock %}
+
+{% block content %}
+<div class="glossary-wrapper">
+    <h2>Словарь терминов и понятий</h2>
+
+    {% if object_list %}
+        <ul class="glossary-list">
+            {% for term in object_list %}
+                <li class="glossary-item">
+                    <a href="{% url 'glossary_detail' term.pk %}" class="glossary-link">
+                        {{ term.term }}
+                    </a>
+                    <small class="glossary-date">
+                        Добавлено: {{ term.date_added|date:"d.m.Y" }}
+                    </small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Пока нет терминов в словаре.</p>
+    {% endif %}
+</div>
+{% endblock %}

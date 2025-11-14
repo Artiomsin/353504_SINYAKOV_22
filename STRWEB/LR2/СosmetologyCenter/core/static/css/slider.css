@@ -1,0 +1,175 @@
+/* Контейнер слайдера */
+.slider-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  
+}
+
+/* Обёртка для слайдов */
+.slider-wrapper {
+  display: flex;
+  width: 100%;
+  transition: transform 0.5s ease;
+}
+
+/* Каждый слайд */
+.slide {
+  flex: 0 0 100%;
+  position: relative;
+}
+
+.slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.slide-caption {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 6px;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 0 0 6px 6px;
+}
+
+/* Стрелки и счётчик */
+.slider-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.slider-controls button {
+  padding: 6px 12px;
+  background: #0078d7;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.slider-controls button:hover {
+  background: #005fa3;
+}
+
+#counter {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Пагинация (кружки) */
+.slider-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.slider-pagination button {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: #666;
+  cursor: pointer;
+}
+
+.slider-pagination button.active {
+  background: #0078d7;
+}
+
+/* Форма настроек */
+.slider-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+  padding: 12px;
+  
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.slider-settings label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+/* Блок для кнопки */
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+/* Кнопка "Применить" */
+#applySettings {
+  padding: 8px 16px;
+  background: #0078d7;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#applySettings:hover {
+  background: #005fa3;
+}
+
+
+/* Светлая тема */
+body.light-theme .slider-container {
+  background: #fff;
+}
+body.light-theme .slider-settings {
+  background: #f9f9f9;
+}
+
+/* Тёмная тема */
+body.dark-theme .slider-container {
+  background: #1e1e1e;
+  border-color: #444;
+}
+body.dark-theme .slider-settings {
+  background: #2a2a2a;
+  border-color: #555;
+}
+body.dark-theme .slider-settings label {
+  color: #e0e0e0;
+}
+body.dark-theme .slider-controls button {
+  background: #1565c0;
+}
+body.dark-theme .slider-controls button:hover {
+  background: #0d47a1;
+}
+body.dark-theme .slider-pagination button {
+  background: #888;
+}
+body.dark-theme .slider-pagination button.active {
+  background: #90caf9;
+}
+body.dark-theme #counter {
+  color: #f0f0f0;
+}
+body.dark-theme #applySettings {
+  background: #1565c0;
+}
+body.dark-theme #applySettings:hover {
+  background: #0d47a1;
+}

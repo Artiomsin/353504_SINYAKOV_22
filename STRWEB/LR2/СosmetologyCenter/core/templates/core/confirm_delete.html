@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Подтверждение удаления аккаунта</h2>
+    <div class="alert alert-danger mt-4">
+        <h4>Внимание!</h4>
+        <p>Вы собираетесь полностью удалить свой аккаунт. Это действие нельзя будет отменить.</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Подтвердить удаление</button>
+            <a href="{% url 'client-dashboard' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

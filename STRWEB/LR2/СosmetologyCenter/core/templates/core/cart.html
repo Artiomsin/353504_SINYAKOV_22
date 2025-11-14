@@ -1,0 +1,156 @@
+{% extends "core/base.html" %}
+{% block title %}Корзина{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-center text-primary fw-bold">Ваша корзина</h2>
+
+    {% if cart and items %}
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Услуга</th>
+                <th>Врач</th>
+                <th>Дата и время</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Статус</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.service.name }}</td>
+                <td>{{ item.doctor.full_name }}</td>
+                <td>
+                    {% if item.date_time %}
+                        {{ item.date_time|date:"d.m.Y H:i" }}
+                    {% else %}
+                        <span class="text-muted">Не указано</span>
+                    {% endif %}
+                </td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.total_price }} руб.</td>
+                <td>
+                    {% if item.is_paid %}
+                        <span class="text-success fw-semibold">Оплачено</span>
+                    {% else %}
+                        <span class="text-warning">Ожидает оплату</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not item.is_paid %}
+                    <!-- Кнопка оплаты -->
+                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#payModal{{ item.id }}">
+                        Оплатить
+                    </button>
+                    {% endif %}
+
+                    <!-- Кнопка удаления -->
+                    <form method="post" action="{% url 'remove-from-cart' item.id %}" class="mt-1">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                    </form>
+
+                    <!-- Кнопка повторного добавления -->
+                    <form method="post" action="{% url 'add-to-cart' item.service.id %}" class="mt-1">
+                        {% csrf_token %}
+                        <input type="hidden" name="doctor" value="{{ item.doctor.id }}">
+                        <input type="hidden" name="date_time" value="{{ item.date_time|date:"Y-m-d H:i:s" }}">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">+ Добавить ещё</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Модальные окна для оплаты каждой услуги -->
+    {% for item in items %}
+    <div class="modal fade" id="payModal{{ item.id }}" tabindex="-1" aria-labelledby="payModalLabel{{ item.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="post" action="{% url 'pay-cart-item' item.id %}">
+          {% csrf_token %}
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="payModalLabel{{ item.id }}">Оплата: {{ item.service.name }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Номер карты</label>
+                <input type="text" name="card_number" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Имя владельца</label>
+                <input type="text" name="card_name" class="form-control" required>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <label class="form-label">Срок действия (MM/YY)</label>
+                  <input type="text" name="expiry" class="form-control" required>
+                </div>
+                <div class="col">
+                  <label class="form-label">CVV</label>
+                  <input type="password" name="cvv" class="form-control" required>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Подтвердить оплату</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Модальное окно для оплаты всей корзины -->
+    <div class="text-end mt-4">
+        <p class="h5">Итого: <strong>{{ cart.total_price }} руб.</strong></p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+            Оплатить все услуги
+        </button>
+    </div>
+
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="post" action="{% url 'checkout' %}">
+          {% csrf_token %}
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="checkoutModalLabel">Оплата всех услуг</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Номер карты</label>
+                <input type="text" name="card_number" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Имя владельца</label>
+                <input type="text" name="card_name" class="form-control" required>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <label class="form-label">Срок действия (MM/YY)</label>
+                  <input type="text" name="expiry" class="form-control" required>
+                </div>
+                <div class="col">
+                  <label class="form-label">CVV</label>
+                  <input type="password" name="cvv" class="form-control" required>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Подтвердить оплату</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">Корзина пуста.</div>
+    {% endif %}
+</div>
+{% endblock %}

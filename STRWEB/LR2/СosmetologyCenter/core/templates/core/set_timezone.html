@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block body_class %}timezone-page{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+    <h2>Настройка временной зоны</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>{{ form.timezone.label }}</label>
+            {{ form.timezone }}
+        </div>
+        <div class="actions">
+            <button type="submit">Сохранить</button>
+            <a href="{% url 'home' %}" class="button">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
