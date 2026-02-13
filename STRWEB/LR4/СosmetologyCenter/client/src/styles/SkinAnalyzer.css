@@ -1,0 +1,468 @@
+/* SkinAnalyzer.css - Обновленная версия с правильным отображением рекомендаций */
+
+.skin-analyzer {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: var(--spacing-4);
+}
+
+.skin-analyzer .container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow);
+}
+
+.skin-analyzer .title {
+  color: var(--text);
+  text-align: center;
+  margin-bottom: var(--spacing-4);
+  font-size: clamp(24px, 4vw, 32px);
+}
+
+/* Секция загрузки */
+.skin-analyzer .upload-section {
+  text-align: center;
+  margin-bottom: var(--spacing-5);
+}
+
+.skin-analyzer .file-input-container {
+  margin-bottom: var(--spacing-3);
+}
+
+.skin-analyzer .file-input {
+  display: none;
+}
+
+.skin-analyzer .file-input-label {
+  cursor: pointer;
+}
+
+.skin-analyzer .upload-button {
+  display: inline-block;
+  padding: var(--spacing-3) var(--spacing-4);
+  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 220ms ease;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 16px;
+}
+
+.skin-analyzer .upload-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.skin-analyzer .file-name {
+  display: block;
+  margin-top: var(--spacing-2);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.skin-analyzer .photo-preview {
+  margin: var(--spacing-3) auto;
+  max-width: 300px;
+}
+
+.skin-analyzer .photo-preview img {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.skin-analyzer .analyze-button {
+  padding: var(--spacing-3) var(--spacing-5);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-600) 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin: 0 auto;
+  transition: all 220ms ease;
+  font-family: var(--font-sans);
+}
+
+.skin-analyzer .analyze-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.skin-analyzer .analyze-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Секция результатов */
+.skin-analyzer .results-section {
+  margin-top: var(--spacing-5);
+}
+
+.skin-analyzer .section-title {
+  color: var(--text);
+  margin-bottom: var(--spacing-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.skin-analyzer .confidence-badge {
+  background: var(--success);
+  color: white;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.skin-analyzer .analysis-grid {
+  display: grid;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.skin-analyzer .analysis-item {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: var(--spacing-3);
+  border-left: 4px solid var(--primary);
+  border: 1px solid var(--border);
+  transition: all 220ms ease;
+}
+
+.skin-analyzer .analysis-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.skin-analyzer .analysis-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+}
+
+.skin-analyzer .item-index {
+  background: var(--primary);
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.skin-analyzer .item-name {
+  font-weight: 600;
+  color: var(--text);
+  flex-grow: 1;
+  font-size: 15px;
+}
+
+.skin-analyzer .progress-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.skin-analyzer .progress-bar {
+  flex-grow: 1;
+  height: 10px;
+  background: var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.skin-analyzer .progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.skin-analyzer .percentage {
+  font-weight: 600;
+  font-size: 15px;
+  min-width: 55px;
+  text-align: right;
+}
+
+.skin-analyzer .item-level {
+  margin-top: var(--spacing-1);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Кнопка рекомендаций */
+.skin-analyzer .recommend-button {
+  padding: var(--spacing-3) var(--spacing-5);
+  background: linear-gradient(135deg, var(--success) 0%, #0da271 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin: var(--spacing-3) auto;
+  transition: all 220ms ease;
+  font-family: var(--font-sans);
+}
+
+.skin-analyzer .recommend-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.skin-analyzer .recommend-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Секция рекомендаций - ОБНОВЛЕНО */
+.skin-analyzer .recommendations-section {
+  margin-top: var(--spacing-5);
+}
+
+.skin-analyzer .recommendations-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.skin-analyzer .recommendations-content {
+  padding: var(--spacing-4);
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Стили для абзацев рекомендаций */
+.skin-analyzer .recommendation-paragraph {
+  margin-bottom: var(--spacing-4);
+  line-height: 1.6;
+}
+
+.skin-analyzer .recommendation-paragraph.intro {
+  color: var(--text);
+  font-size: 15px;
+  margin-bottom: var(--spacing-3);
+}
+
+.skin-analyzer .recommendation-paragraph.title {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: var(--spacing-3);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: var(--spacing-2);
+}
+
+.skin-analyzer .recommendation-paragraph.list {
+  background: rgba(59, 130, 246, 0.03);
+  border-radius: var(--radius);
+  padding: var(--spacing-3);
+  border-left: 3px solid var(--primary);
+}
+
+/* Стили для строк рекомендаций */
+.skin-analyzer .rec-line {
+  margin-bottom: var(--spacing-2);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+}
+
+.skin-analyzer .rec-line.list-item {
+  padding: var(--spacing-2) 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.skin-analyzer .rec-line.list-item:last-child {
+  border-bottom: none;
+}
+
+.skin-analyzer .rec-line.list-item:hover {
+  background: rgba(59, 130, 246, 0.05);
+  border-radius: 6px;
+  padding: var(--spacing-2);
+}
+
+/* Маркеры списка */
+.skin-analyzer .list-marker {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.skin-analyzer .list-number {
+  background: var(--primary);
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Текст рекомендаций */
+.skin-analyzer .rec-text {
+  flex: 1;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.skin-analyzer .rec-text strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.skin-analyzer .rec-text p {
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.skin-analyzer .rec-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Отступ между абзацами */
+.skin-analyzer .paragraph-spacer {
+  height: 1px;
+  background: var(--border);
+  margin: var(--spacing-4) 0;
+}
+
+/* Футер рекомендаций */
+.skin-analyzer .recommendations-footer {
+  background: var(--bg);
+  padding: var(--spacing-3);
+  border-top: 1px solid var(--border);
+}
+
+.skin-analyzer .tip {
+  text-align: center;
+  color: var(--muted);
+  margin-bottom: var(--spacing-3);
+  font-size: 14px;
+  padding: 0 var(--spacing-2);
+  line-height: 1.5;
+}
+
+.skin-analyzer .save-button {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-3);
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 220ms ease;
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+
+.skin-analyzer .save-button:hover {
+  background: var(--primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+/* Спиннер */
+.skin-analyzer .spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .skin-analyzer .container {
+    padding: var(--spacing-3);
+    margin: var(--spacing-2);
+  }
+  
+  .skin-analyzer .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .skin-analyzer .progress-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-2);
+  }
+  
+  .skin-analyzer .percentage {
+    text-align: left;
+  }
+  
+  .skin-analyzer .section-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+  
+  .skin-analyzer .confidence-badge {
+    align-self: flex-start;
+  }
+  
+  .skin-analyzer .rec-line {
+    gap: var(--spacing-2);
+  }
+}
+
+/* Темная тема */
+[data-theme="dark"] .skin-analyzer .analysis-item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .skin-analyzer .recommendations-card {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .skin-analyzer .recommendation-paragraph.list {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+[data-theme="dark"] .skin-analyzer .rec-line.list-item:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="dark"] .skin-analyzer .photo-preview img {
+  border-color: var(--border);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
